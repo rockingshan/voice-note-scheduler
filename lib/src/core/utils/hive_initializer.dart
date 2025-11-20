@@ -1,7 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../domain/entities/voice_note.dart';
 import '../../domain/entities/scheduled_task.dart';
+import '../../domain/entities/category.dart';
 import '../../core/constants/app_constants.dart';
+import '../../data/datasources/hive_category_datasource.dart';
+import '../../data/repositories/category_repository.dart';
 
 Future<void> initializeHive() async {
   // Initialize Hive
@@ -20,8 +23,20 @@ Future<void> initializeHive() async {
   if (!Hive.isAdapterRegistered(3)) {
     Hive.registerAdapter(TaskStatusAdapter());
   }
+  if (!Hive.isAdapterRegistered(4)) {
+    Hive.registerAdapter(VoiceNoteStatusAdapter());
+  }
+  if (!Hive.isAdapterRegistered(5)) {
+    Hive.registerAdapter(CategoryAdapter());
+  }
   
   // Open boxes
   await Hive.openBox<VoiceNote>(AppConstants.hiveBoxName);
   await Hive.openBox<ScheduledTask>('tasks_box');
+  await Hive.openBox<Category>(HiveCategoryDatasource.categoryBoxName);
+  
+  // Ensure default category exists
+  final categoryDatasource = HiveCategoryDatasource();
+  final categoryRepository = CategoryRepositoryImpl(categoryDatasource);
+  await categoryRepository.ensureDefaultCategory();
 }

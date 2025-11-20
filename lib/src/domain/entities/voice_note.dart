@@ -3,6 +3,20 @@ import 'package:uuid/uuid.dart';
 
 part 'voice_note.g.dart';
 
+@HiveType(typeId: 4)
+enum VoiceNoteStatus {
+  @HiveField(0)
+  recording,
+  @HiveField(1)
+  saved,
+  @HiveField(2)
+  processing,
+  @HiveField(3)
+  processed,
+  @HiveField(4)
+  failed,
+}
+
 @HiveType(typeId: 0)
 class VoiceNote extends HiveObject {
   @HiveField(0)
@@ -19,6 +33,14 @@ class VoiceNote extends HiveObject {
   final DateTime? processedAt;
   @HiveField(6)
   final bool isProcessed;
+  @HiveField(7)
+  final int duration;
+  @HiveField(8)
+  final String categoryId;
+  @HiveField(9)
+  final VoiceNoteStatus status;
+  @HiveField(10)
+  final Map<String, String> metadata;
 
   VoiceNote({
     String? id,
@@ -28,6 +50,10 @@ class VoiceNote extends HiveObject {
     required this.createdAt,
     this.processedAt,
     this.isProcessed = false,
+    this.duration = 0,
+    required this.categoryId,
+    this.status = VoiceNoteStatus.saved,
+    this.metadata = const {},
   }) : id = id ?? const Uuid().v4();
 
   VoiceNote copyWith({
@@ -38,6 +64,10 @@ class VoiceNote extends HiveObject {
     DateTime? createdAt,
     DateTime? processedAt,
     bool? isProcessed,
+    int? duration,
+    String? categoryId,
+    VoiceNoteStatus? status,
+    Map<String, String>? metadata,
   }) {
     return VoiceNote(
       id: id ?? this.id,
@@ -47,6 +77,10 @@ class VoiceNote extends HiveObject {
       createdAt: createdAt ?? this.createdAt,
       processedAt: processedAt ?? this.processedAt,
       isProcessed: isProcessed ?? this.isProcessed,
+      duration: duration ?? this.duration,
+      categoryId: categoryId ?? this.categoryId,
+      status: status ?? this.status,
+      metadata: metadata ?? this.metadata,
     );
   }
 
@@ -59,6 +93,10 @@ class VoiceNote extends HiveObject {
       'createdAt': createdAt.toIso8601String(),
       'processedAt': processedAt?.toIso8601String(),
       'isProcessed': isProcessed,
+      'duration': duration,
+      'categoryId': categoryId,
+      'status': status.index,
+      'metadata': metadata,
     };
   }
 
@@ -73,6 +111,10 @@ class VoiceNote extends HiveObject {
           ? DateTime.parse(json['processedAt']) 
           : null,
       isProcessed: json['isProcessed'] ?? false,
+      duration: json['duration'] ?? 0,
+      categoryId: json['categoryId'] ?? 'default',
+      status: VoiceNoteStatus.values[json['status'] ?? 1],
+      metadata: Map<String, String>.from(json['metadata'] ?? {}),
     );
   }
 }
