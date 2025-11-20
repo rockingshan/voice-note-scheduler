@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart';
 import 'package:voice_note_scheduler/src/domain/entities/category.dart';
 import 'package:voice_note_scheduler/src/data/datasources/hive_category_datasource.dart';
 import 'package:voice_note_scheduler/src/data/repositories/category_repository.dart';

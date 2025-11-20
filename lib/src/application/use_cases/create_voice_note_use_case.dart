@@ -39,7 +39,7 @@ class CreateVoiceNoteUseCase {
       metadata: metadata ?? {},
     );
 
-    await _voiceNoteRepository.addVoiceNote(voiceNote);
+    await _voiceNoteRepository.createVoiceNote(voiceNote);
     return voiceNote;
   }
 

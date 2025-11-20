@@ -26,36 +26,17 @@ class HiveCategoryDatasource implements CategoryDatasource {
 
   @override
   Future<void> updateCategory(Category category) async {
-    final key = _categoriesBox.keys.firstWhere(
-      (key) => (_categoriesBox.get(key) as Category).id == category.id,
-      orElse: () => null,
-    );
-    if (key != null) {
-      await _categoriesBox.put(key, category);
-    }
+    await _categoriesBox.put(category.id, category);
   }
 
   @override
   Future<void> deleteCategory(String id) async {
-    final key = _categoriesBox.keys.firstWhere(
-      (key) => (_categoriesBox.get(key) as Category).id == id,
-      orElse: () => null,
-    );
-    if (key != null) {
-      await _categoriesBox.delete(key);
-    }
+    await _categoriesBox.delete(id);
   }
 
   @override
   Future<Category?> getCategoryById(String id) async {
-    try {
-      return _categoriesBox.values.firstWhere(
-        (category) => category.id == id,
-        orElse: () => null,
-      );
-    } catch (e) {
-      return null;
-    }
+    return _categoriesBox.get(id);
   }
 
   @override
@@ -65,14 +46,12 @@ class HiveCategoryDatasource implements CategoryDatasource {
 
   @override
   Future<Category?> getDefaultCategory() async {
-    try {
-      return _categoriesBox.values.firstWhere(
-        (category) => category.isDefault,
-        orElse: () => null,
-      );
-    } catch (e) {
-      return null;
+    for (final category in _categoriesBox.values) {
+      if (category.isDefault) {
+        return category;
+      }
     }
+    return null;
   }
 
   @override

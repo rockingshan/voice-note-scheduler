@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-import '../../data/repositories/category_repository.dart';
-import '../../data/repositories/voice_note_repository.dart';
+import '../repositories/category_repository.dart';
+import '../repositories/voice_note_repository.dart';
 import 'audio_recording_state.dart';
 import 'recorder.dart';
 

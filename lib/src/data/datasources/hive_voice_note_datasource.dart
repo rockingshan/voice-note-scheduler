@@ -27,36 +27,17 @@ class HiveVoiceNoteDatasource implements VoiceNoteDatasource {
 
   @override
   Future<void> updateVoiceNote(VoiceNote voiceNote) async {
-    final key = _voiceNotesBox.keys.firstWhere(
-      (key) => (_voiceNotesBox.get(key) as VoiceNote).id == voiceNote.id,
-      orElse: () => null,
-    );
-    if (key != null) {
-      await _voiceNotesBox.put(key, voiceNote);
-    }
+    await _voiceNotesBox.put(voiceNote.id, voiceNote);
   }
 
   @override
   Future<void> deleteVoiceNote(String id) async {
-    final key = _voiceNotesBox.keys.firstWhere(
-      (key) => (_voiceNotesBox.get(key) as VoiceNote).id == id,
-      orElse: () => null,
-    );
-    if (key != null) {
-      await _voiceNotesBox.delete(key);
-    }
+    await _voiceNotesBox.delete(id);
   }
 
   @override
   Future<VoiceNote?> getVoiceNoteById(String id) async {
-    try {
-      return _voiceNotesBox.values.firstWhere(
-        (note) => note.id == id,
-        orElse: () => null,
-      );
-    } catch (e) {
-      return null;
-    }
+    return _voiceNotesBox.get(id);
   }
 
   @override

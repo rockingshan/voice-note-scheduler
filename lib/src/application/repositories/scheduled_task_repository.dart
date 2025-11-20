@@ -1,4 +1,4 @@
-import '../entities/scheduled_task.dart';
+import '../../domain/entities/scheduled_task.dart';
 
 abstract class ScheduledTaskRepository {
   Future<List<ScheduledTask>> getTasks();

@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
+import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart';
+import 'package:voice_note_scheduler/src/application/repositories/voice_note_repository.dart';
 import 'package:voice_note_scheduler/src/application/services/audio_recorder_service.dart';
 import 'package:voice_note_scheduler/src/application/services/audio_recording_state.dart';
 import 'package:voice_note_scheduler/src/application/services/recorder.dart';
-import 'package:voice_note_scheduler/src/data/repositories/category_repository.dart';
-import 'package:voice_note_scheduler/src/data/repositories/voice_note_repository.dart';
 import 'package:voice_note_scheduler/src/domain/entities/category.dart';
 import 'package:voice_note_scheduler/src/domain/entities/voice_note.dart';
 
@@ -272,10 +272,11 @@ class StubVoiceNoteRepository implements VoiceNoteRepository {
   Future<List<VoiceNote>> getVoiceNotesByCategory(String categoryId) =>
       throw UnimplementedError();
   @override
-  Stream<List<VoiceNote>> watchAllVoiceNotes() => const Stream.empty();
+  Stream<List<VoiceNote>> watchAllVoiceNotes() => const Stream<List<VoiceNote>>.empty();
+
   @override
   Stream<List<VoiceNote>> watchVoiceNotesByCategory(String categoryId) =>
-      const Stream.empty();
+      const Stream<List<VoiceNote>>.empty();
   @override
   Future<void> moveAudioFile(String oldPath, String newPath) =>
       throw UnimplementedError();
@@ -296,7 +297,7 @@ class StubCategoryRepository implements CategoryRepository {
   Future<Category?> getDefaultCategory() async => defaultCategory;
 
   @override
-  Stream<List<Category>> watchAllCategories() => const Stream.empty();
+  Stream<List<Category>> watchAllCategories() => const Stream<List<Category>>.empty();
 
   // Remaining methods are not required for these tests.
   @override
