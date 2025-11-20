@@ -33,7 +33,7 @@ Future<void> initializeHive() async {
   // Open boxes
   await Hive.openBox<VoiceNote>(AppConstants.hiveBoxName);
   await Hive.openBox<ScheduledTask>('tasks_box');
-  await Hive.openBox<Category>(HiveCategoryDatasource.categoryBoxName);
+  await Hive.openBox<Category>('categories_box');
   
   // Ensure default category exists
   final categoryDatasource = HiveCategoryDatasource();

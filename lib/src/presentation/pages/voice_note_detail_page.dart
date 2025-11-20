@@ -71,6 +71,56 @@ class VoiceNoteDetailPage extends ConsumerWidget {
     }
   }
 
+  Future<void> _transcribeNote(
+    BuildContext context,
+    WidgetRef ref,
+    VoiceNote note,
+  ) async {
+    if (note.status == VoiceNoteStatus.processing) return;
+    
+    try {
+      final useCase = ref.read(transcribeVoiceNoteUseCaseProvider);
+      await useCase(note.id);
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transcription completed')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Transcription failed: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _extractTasks(
+    BuildContext context,
+    WidgetRef ref,
+    VoiceNote note,
+  ) async {
+    try {
+      final useCase = ref.read(scheduleTasksFromVoiceNoteUseCaseProvider);
+      final tasks = await useCase(note.id);
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Extracted ${tasks.length} tasks')),
+        );
+        // Navigate to tasks page
+        context.push('/tasks');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Task extraction failed: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final note = ref.watch(voiceNoteProvider(noteId));
@@ -193,6 +243,44 @@ class VoiceNoteDetailPage extends ConsumerWidget {
                   child: Text(
                     note.transcription!,
                     style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              // Task creation section
+              Text(
+                'Tasks',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _extractTasks(context, ref, note),
+                  icon: const Icon(Icons.auto_awesome),
+                  label: const Text('Extract Tasks from Transcription'),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+            
+            // Transcription section
+            if (note.transcription == null) ...[
+              Text(
+                'Transcription',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () => _transcribeNote(context, ref, note),
+                  icon: const Icon(Icons.transcribe),
+                  label: Text(
+                    note.status == VoiceNoteStatus.processing
+                        ? 'Transcribing...'
+                        : 'Transcribe Audio',
                   ),
                 ),
               ),
