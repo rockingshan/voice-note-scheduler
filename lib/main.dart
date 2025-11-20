@@ -8,6 +8,7 @@ import 'src/presentation/pages/home_page.dart';
 import 'src/presentation/pages/voice_recording_page.dart';
 import 'src/presentation/pages/settings_page.dart';
 import 'src/presentation/pages/scheduled_tasks_page.dart';
+import 'src/presentation/pages/voice_note_detail_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +51,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/record',
         builder: (context, state) => const VoiceRecordingPage(),
+      ),
+      GoRoute(
+        path: '/note/:id',
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return VoiceNoteDetailPage(noteId: id);
+        },
       ),
       GoRoute(
         path: '/tasks',

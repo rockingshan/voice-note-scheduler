@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../application/services/audio_recording_state.dart';
+import '../../domain/entities/voice_note.dart';
 import '../providers/app_providers.dart';
 
 class VoiceRecordingPage extends ConsumerWidget {
@@ -24,6 +26,30 @@ class VoiceRecordingPage extends ConsumerWidget {
         SnackBar(content: Text(error.toString())),
       );
     }
+  }
+
+  Future<void> _saveVoiceNote(
+    WidgetRef ref,
+    RecordingMetadata metadata,
+  ) async {
+    final categoryRepository = ref.read(categoryRepositoryProvider);
+    final voiceNotesNotifier = ref.read(voiceNotesProvider.notifier);
+    
+    final defaultCategory = await categoryRepository.ensureDefaultCategory();
+    
+    final voiceNote = VoiceNote(
+      title: 'Voice Note ${DateTime.now().toString().substring(0, 16)}',
+      audioPath: metadata.audioFilePath,
+      createdAt: metadata.timestamp,
+      duration: metadata.duration.inSeconds,
+      categoryId: defaultCategory.id,
+      status: VoiceNoteStatus.saved,
+      metadata: {
+        'fileSize': metadata.fileSizeBytes.toString(),
+      },
+    );
+    
+    await voiceNotesNotifier.addVoiceNote(voiceNote);
   }
 
   @override
@@ -117,14 +143,18 @@ class VoiceRecordingPage extends ConsumerWidget {
               onResume: () => _runAction(context, audioRecorder.resumeRecording),
               onStop: () async {
                 final metadata = await audioRecorder.stopRecording();
-                if (metadata != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Recording saved (${metadata.duration.inSeconds}s)',
+                if (metadata != null && context.mounted) {
+                  await _saveVoiceNote(ref, metadata);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Recording saved (${metadata.duration.inSeconds}s)',
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                    context.pop();
+                  }
                 }
               },
               onCancel: () => _runAction(context, audioRecorder.cancelRecording),
