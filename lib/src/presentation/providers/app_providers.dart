@@ -1,8 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../domain/entities/voice_note.dart';
+import '../../domain/entities/category.dart';
 import '../../domain/entities/scheduled_task.dart';
 import '../../core/constants/app_constants.dart';
+import '../../data/datasources/hive_voice_note_datasource.dart';
+import '../../data/datasources/hive_category_datasource.dart';
+import '../../data/repositories/voice_note_repository.dart';
+import '../../data/repositories/category_repository.dart';
+import '../../application/services/audio_recorder_service.dart';
+import '../../application/services/audio_recording_state.dart';
 
 // Hive providers
 final hiveBoxProvider = Provider<Box<VoiceNote>>((ref) {
@@ -110,3 +117,41 @@ class TasksNotifier extends StateNotifier<List<ScheduledTask>> {
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
   }
 }
+
+// Repository providers
+final voiceNoteDatasourceProvider = Provider<VoiceNoteDatasource>((ref) {
+  return HiveVoiceNoteDatasource();
+});
+
+final categoryDatasourceProvider = Provider<CategoryDatasource>((ref) {
+  return HiveCategoryDatasource();
+});
+
+final voiceNoteRepositoryProvider = Provider<VoiceNoteRepository>((ref) {
+  final datasource = ref.watch(voiceNoteDatasourceProvider);
+  return VoiceNoteRepositoryImpl(datasource);
+});
+
+final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
+  final datasource = ref.watch(categoryDatasourceProvider);
+  return CategoryRepositoryImpl(datasource);
+});
+
+// Audio Recorder Service providers
+final audioRecorderServiceProvider = Provider<AudioRecorderService>((ref) {
+  final voiceNoteRepository = ref.watch(voiceNoteRepositoryProvider);
+  final categoryRepository = ref.watch(categoryRepositoryProvider);
+  
+  final service = AudioRecorderServiceImpl(
+    voiceNoteRepository: voiceNoteRepository,
+    categoryRepository: categoryRepository,
+  );
+  
+  ref.onDispose(service.dispose);
+  return service;
+});
+
+final audioRecordingStateProvider = StreamProvider<AudioRecordingState>((ref) {
+  final service = ref.watch(audioRecorderServiceProvider);
+  return service.stateStream;
+});
