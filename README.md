@@ -5,6 +5,7 @@ A Flutter application for recording voice notes and automatically scheduling tas
 ## Features
 
 - 🎤 **Voice Recording**: Record voice notes with audio waveform visualization
+- 🎙️ **On-device Transcription**: Offline speech-to-text using Whisper model via Ollama
 - 🤖 **AI Processing**: Local LLM integration for intelligent task extraction
 - 📅 **Smart Scheduling**: Automatically organize and schedule tasks from voice notes
 - 💾 **Local Storage**: Offline-first with Hive database persistence
@@ -43,10 +44,13 @@ A Flutter application for recording voice notes and automatically scheduling tas
    # Download from https://ollama.ai/download
    ```
 
-2. **Pull a Model**:
+2. **Pull Models**:
    ```bash
+   # LLM for scheduling
    ollama pull llama3.2
-   # or any other compatible model
+   
+   # Whisper model for on-device transcription
+   ollama pull whisper:small
    ```
 
 3. **Start Ollama Server**:
@@ -166,7 +170,8 @@ The app requires the following permissions (configured in `ios/Runner/Info.plist
 Key configuration values are in `lib/src/core/constants/app_constants.dart`:
 
 - Ollama server URL: `http://localhost:11434`
-- Default model: `llama3.2`
+- Default LLM model: `llama3.2`
+- Transcription model: `whisper:small`
 - Max recording duration: 300 seconds (5 minutes)
 - Audio file format: `.m4a`
 

@@ -11,6 +11,7 @@ class AppConstants {
   // Ollama LLM
   static const String ollamaBaseUrl = 'http://localhost:11434';
   static const String defaultModel = 'llama3.2';
+  static const String transcriptionModelName = 'whisper:small';
   static const int ollamaTimeout = 30; // seconds
 
   // Storage

@@ -10,6 +10,9 @@ import '../../data/repositories/voice_note_repository.dart';
 import '../../data/repositories/category_repository.dart';
 import '../../application/services/audio_recorder_service.dart';
 import '../../application/services/audio_recording_state.dart';
+import '../../application/services/transcription_service.dart';
+import '../../application/services/transcription_state.dart';
+import '../../data/services/ollama_transcription_backend.dart';
 
 // Hive providers
 final hiveBoxProvider = Provider<Box<VoiceNote>>((ref) {
@@ -154,4 +157,18 @@ final audioRecorderServiceProvider = Provider<AudioRecorderService>((ref) {
 final audioRecordingStateProvider = StreamProvider<AudioRecordingState>((ref) {
   final service = ref.watch(audioRecorderServiceProvider);
   return service.stateStream;
+});
+
+// Transcription Service providers
+final transcriptionServiceProvider = Provider<TranscriptionService>((ref) {
+  final backend = OllamaTranscriptionBackend();
+  final service = TranscriptionServiceImpl(backend: backend);
+  ref.onDispose(service.dispose);
+  return service;
+});
+
+final transcriptionStateProvider = StreamProvider<TranscriptionProgress>((ref) {
+  final service = ref.watch(transcriptionServiceProvider);
+  service.ensureModelReady();
+  return service.progressStream;
 });
