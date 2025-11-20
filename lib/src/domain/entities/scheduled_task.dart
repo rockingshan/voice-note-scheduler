@@ -16,12 +16,14 @@ class ScheduledTask extends HiveObject {
   @HiveField(4)
   final DateTime createdAt;
   @HiveField(5)
-  final String? voiceNoteId;
+  final DateTime updatedAt;
   @HiveField(6)
-  final TaskPriority priority;
+  final String? voiceNoteId;
   @HiveField(7)
-  final TaskStatus status;
+  final TaskPriority priority;
   @HiveField(8)
+  final TaskStatus status;
+  @HiveField(9)
   final List<String> tags;
 
   ScheduledTask({
@@ -30,11 +32,13 @@ class ScheduledTask extends HiveObject {
     this.description,
     required this.scheduledFor,
     required this.createdAt,
+    DateTime? updatedAt,
     this.voiceNoteId,
     this.priority = TaskPriority.medium,
     this.status = TaskStatus.pending,
     this.tags = const [],
-  }) : id = id ?? const Uuid().v4();
+  }) : id = id ?? const Uuid().v4(),
+       updatedAt = updatedAt ?? createdAt;
 
   ScheduledTask copyWith({
     String? id,
@@ -42,6 +46,7 @@ class ScheduledTask extends HiveObject {
     String? description,
     DateTime? scheduledFor,
     DateTime? createdAt,
+    DateTime? updatedAt,
     String? voiceNoteId,
     TaskPriority? priority,
     TaskStatus? status,
@@ -53,6 +58,7 @@ class ScheduledTask extends HiveObject {
       description: description ?? this.description,
       scheduledFor: scheduledFor ?? this.scheduledFor,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? DateTime.now(),
       voiceNoteId: voiceNoteId ?? this.voiceNoteId,
       priority: priority ?? this.priority,
       status: status ?? this.status,
@@ -67,6 +73,7 @@ class ScheduledTask extends HiveObject {
       'description': description,
       'scheduledFor': scheduledFor.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'voiceNoteId': voiceNoteId,
       'priority': priority.index,
       'status': status.index,
@@ -81,6 +88,7 @@ class ScheduledTask extends HiveObject {
       description: json['description'],
       scheduledFor: DateTime.parse(json['scheduledFor']),
       createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? json['createdAt']),
       voiceNoteId: json['voiceNoteId'],
       priority: TaskPriority.values[json['priority'] ?? 1],
       status: TaskStatus.values[json['status'] ?? 0],

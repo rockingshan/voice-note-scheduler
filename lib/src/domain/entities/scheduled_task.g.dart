@@ -22,17 +22,18 @@ class ScheduledTaskAdapter extends TypeAdapter<ScheduledTask> {
       description: fields[2] as String?,
       scheduledFor: fields[3] as DateTime,
       createdAt: fields[4] as DateTime,
-      voiceNoteId: fields[5] as String?,
-      priority: fields[6] as TaskPriority,
-      status: fields[7] as TaskStatus,
-      tags: (fields[8] as List).cast<String>(),
+      updatedAt: fields[5] as DateTime,
+      voiceNoteId: fields[6] as String?,
+      priority: fields[7] as TaskPriority,
+      status: fields[8] as TaskStatus,
+      tags: (fields[9] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ScheduledTask obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,12 +45,14 @@ class ScheduledTaskAdapter extends TypeAdapter<ScheduledTask> {
       ..writeByte(4)
       ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.voiceNoteId)
+      ..write(obj.updatedAt)
       ..writeByte(6)
-      ..write(obj.priority)
+      ..write(obj.voiceNoteId)
       ..writeByte(7)
-      ..write(obj.status)
+      ..write(obj.priority)
       ..writeByte(8)
+      ..write(obj.status)
+      ..writeByte(9)
       ..write(obj.tags);
   }
 
