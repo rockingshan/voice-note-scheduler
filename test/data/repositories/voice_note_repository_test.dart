@@ -74,7 +74,7 @@ void main() {
     });
 
     test('getVoiceNotesByCategory filters by category', () async {
-      final categoryId = 'work';
+      const categoryId = 'work';
       final voiceNotes = [
         VoiceNote(
           title: 'Work Note',

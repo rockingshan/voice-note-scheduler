@@ -29,10 +29,8 @@ class CreateVoiceNoteUseCase {
     final voiceNote = VoiceNote(
       id: _uuid.v4(),
       title: title,
-      content: '',
       audioPath: audioPath,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
       categoryId: targetCategoryId,
       duration: duration,
       status: VoiceNoteStatus.saved,

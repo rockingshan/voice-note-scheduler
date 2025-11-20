@@ -76,8 +76,6 @@ class VoiceNoteRepositoryImpl implements VoiceNoteRepository {
     try {
       final oldFile = File(oldPath);
       if (await oldFile.exists()) {
-        final newFile = File(newPath);
-        
         final newDir = Directory(p.dirname(newPath));
         if (!await newDir.exists()) {
           await newDir.create(recursive: true);

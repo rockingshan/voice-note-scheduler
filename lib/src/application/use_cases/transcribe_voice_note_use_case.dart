@@ -21,7 +21,6 @@ class TranscribeVoiceNoteUseCase {
     // Update status to processing
     final processingNote = voiceNote.copyWith(
       status: VoiceNoteStatus.processing,
-      updatedAt: DateTime.now(),
     );
     await _voiceNoteRepository.updateVoiceNote(processingNote);
 
@@ -34,7 +33,7 @@ class TranscribeVoiceNoteUseCase {
         transcription: result.text,
         status: VoiceNoteStatus.processed,
         processedAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        isProcessed: true,
         metadata: {
           ...processingNote.metadata,
           'confidence': result.confidence?.toString() ?? 'unknown',
@@ -48,7 +47,6 @@ class TranscribeVoiceNoteUseCase {
       // Mark as failed
       final failedNote = processingNote.copyWith(
         status: VoiceNoteStatus.failed,
-        updatedAt: DateTime.now(),
         metadata: {
           ...processingNote.metadata,
           'error': e.toString(),

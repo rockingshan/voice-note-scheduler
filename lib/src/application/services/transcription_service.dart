@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:meta/meta.dart';
-
 import '../../core/constants/app_constants.dart';
 import 'transcription_state.dart';
 
@@ -51,7 +49,6 @@ class BackendTranscriptionChunk {
   });
 }
 
-@visibleForTesting
 class TranscriptionCancellationToken {
   bool _isCancelled = false;
   final List<_CancelCallback> _listeners = [];

@@ -22,6 +22,7 @@ class VoiceRecordingPage extends ConsumerWidget {
     try {
       await action();
     } catch (error) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(error.toString())),
       );
@@ -93,7 +94,7 @@ class VoiceRecordingPage extends ConsumerWidget {
                       shape: BoxShape.circle,
                       color: state.isRecording
                           ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                          : Theme.of(context).colorScheme.surfaceVariant,
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
                       border: Border.all(
                         color: Theme.of(context).colorScheme.primary,
                         width: state.isRecording ? 4 : 2,

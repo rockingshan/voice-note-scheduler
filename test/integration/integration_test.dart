@@ -33,7 +33,7 @@ void main() {
 
       when(mockCategoryRepo.getDefaultCategory())
           .thenAnswer((_) async => defaultCategory);
-      when(mockVoiceNoteRepo.createVoiceNote(any))
+      when(mockVoiceNoteRepo.createVoiceNote(any<VoiceNote>()))
           .thenAnswer((_) async {});
 
       // Act
@@ -50,7 +50,7 @@ void main() {
       expect(voiceNote.categoryId, equals('default-category'));
       expect(voiceNote.status, equals(VoiceNoteStatus.saved));
       
-      verify(mockVoiceNoteRepo.createVoiceNote(any)).called(1);
+      verify(mockVoiceNoteRepo.createVoiceNote(any<VoiceNote>())).called(1);
     });
 
     test('ScheduledTask should have correct structure', () {
@@ -85,7 +85,6 @@ void main() {
         title: 'Test Note',
         audioPath: '/path/to/audio.m4a',
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
         categoryId: 'test-category',
         duration: 120,
         status: VoiceNoteStatus.saved,

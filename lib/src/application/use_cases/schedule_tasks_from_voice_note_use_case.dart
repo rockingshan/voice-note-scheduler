@@ -46,7 +46,6 @@ class ScheduleTasksFromVoiceNoteUseCase {
         'tasksExtracted': savedTasks.length.toString(),
         'lastScheduledAt': DateTime.now().toIso8601String(),
       },
-      updatedAt: DateTime.now(),
     );
     await _voiceNoteRepository.updateVoiceNote(updatedNote);
 

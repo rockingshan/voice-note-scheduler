@@ -234,7 +234,7 @@ class AudioRecorderServiceImpl implements AudioRecorderService {
       
       if (path == null || _currentState.audioFilePath == null) {
         _updateState(
-          AudioRecordingState(
+          const AudioRecordingState(
             status: RecordingStatus.error,
             errorMessage: 'Recording path is null',
           ),
