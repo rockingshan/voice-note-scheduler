@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:meta/meta.dart';
-
 import '../../core/constants/app_constants.dart';
 import 'transcription_state.dart';
 
-typedef _CancelCallback = void Function();
+typedef CancelCallback = void Function();
 
 abstract class TranscriptionService {
   Stream<TranscriptionProgress> get progressStream;
@@ -51,23 +49,22 @@ class BackendTranscriptionChunk {
   });
 }
 
-@visibleForTesting
 class TranscriptionCancellationToken {
   bool _isCancelled = false;
-  final List<_CancelCallback> _listeners = [];
+  final List<CancelCallback> _listeners = [];
 
   bool get isCancelled => _isCancelled;
 
   void cancel() {
     if (_isCancelled) return;
     _isCancelled = true;
-    for (final listener in List<_CancelCallback>.from(_listeners)) {
+    for (final listener in List<CancelCallback>.from(_listeners)) {
       listener();
     }
     _listeners.clear();
   }
 
-  _CancelCallback addListener(_CancelCallback listener) {
+  CancelCallback addListener(CancelCallback listener) {
     if (_isCancelled) {
       listener();
       return () {};
@@ -108,17 +105,21 @@ class TranscriptionServiceImpl implements TranscriptionService {
 
   @override
   bool get isBusy =>
-      _isProcessingQueue || _currentProgress.isProcessing || _jobQueue.isNotEmpty;
+      _isProcessingQueue ||
+      _currentProgress.isProcessing ||
+      _jobQueue.isNotEmpty;
 
   TranscriptionServiceImpl({required TranscriptionBackend backend})
       : _backend = backend,
-        _progressController = StreamController<TranscriptionProgress>.broadcast() {
+        _progressController =
+            StreamController<TranscriptionProgress>.broadcast() {
     _progressController.add(_currentProgress);
     _scheduleModelCheck();
   }
 
   @override
-  Stream<TranscriptionProgress> get progressStream => _progressController.stream;
+  Stream<TranscriptionProgress> get progressStream =>
+      _progressController.stream;
 
   @override
   TranscriptionProgress get currentProgress => _currentProgress;
@@ -437,7 +438,7 @@ class TranscriptionServiceImpl implements TranscriptionService {
         job.completer.completeError(StateError('Transcription cancelled'));
       }
       _updateProgress(
-        TranscriptionProgress(
+        const TranscriptionProgress(
           status: TranscriptionStatus.cancelled,
           progress: 0.0,
           errorMessage: 'Queued transcription cancelled.',
@@ -455,7 +456,8 @@ class TranscriptionServiceImpl implements TranscriptionService {
     for (final job in _jobQueue) {
       job.token.cancel();
       if (!job.completer.isCompleted) {
-        job.completer.completeError(StateError('Transcription service disposed'));
+        job.completer
+            .completeError(StateError('Transcription service disposed'));
       }
     }
     _jobQueue.clear();

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
 import 'package:voice_note_scheduler/src/domain/entities/voice_note.dart';
 
 void main() {

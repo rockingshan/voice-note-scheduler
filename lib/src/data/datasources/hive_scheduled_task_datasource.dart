@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../domain/entities/scheduled_task.dart';
-import '../../core/constants/app_constants.dart';
 
 abstract class ScheduledTaskDatasource {
   Future<List<ScheduledTask>> getAllTasks();

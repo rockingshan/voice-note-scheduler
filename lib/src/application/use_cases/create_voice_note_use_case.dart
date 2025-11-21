@@ -22,24 +22,22 @@ class CreateVoiceNoteUseCase {
     Map<String, String>? metadata,
   }) async {
     // Ensure we have a valid category
-    final targetCategoryId = categoryId ?? 
+    final targetCategoryId = categoryId ??
         (await _categoryRepository.getDefaultCategory())?.id ??
         (await _ensureDefaultCategory()).id;
 
     final voiceNote = VoiceNote(
       id: _uuid.v4(),
       title: title,
-      content: '',
       audioPath: audioPath,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
       categoryId: targetCategoryId,
       duration: duration,
       status: VoiceNoteStatus.saved,
       metadata: metadata ?? {},
     );
 
-    await _voiceNoteRepository.addVoiceNote(voiceNote);
+    await _voiceNoteRepository.createVoiceNote(voiceNote);
     return voiceNote;
   }
 

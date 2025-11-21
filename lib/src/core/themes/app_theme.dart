@@ -11,18 +11,20 @@ class AppTheme {
   static const Color secondaryTextColor = Color(0xFF757575);
 
   static ThemeData get lightTheme {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.light,
+    ).copyWith(
+      primary: primaryColor,
+      secondary: secondaryColor,
+      error: errorColor,
+      surface: surfaceColor,
+      onSurface: onSurfaceColor,
+    );
+
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
-        primary: primaryColor,
-        secondary: secondaryColor,
-        error: errorColor,
-        background: backgroundColor,
-        surface: surfaceColor,
-        onSurface: onSurfaceColor,
-      ),
+      colorScheme: colorScheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
@@ -70,15 +72,18 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.dark,
+    ).copyWith(
+      primary: primaryColor,
+      secondary: secondaryColor,
+      error: errorColor,
+    );
+
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.dark,
-        primary: primaryColor,
-        secondary: secondaryColor,
-        error: errorColor,
-      ),
+      colorScheme: colorScheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFF1A1A1A),
         foregroundColor: Colors.white,

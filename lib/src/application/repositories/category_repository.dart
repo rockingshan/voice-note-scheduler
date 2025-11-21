@@ -1,14 +1,13 @@
-import '../entities/category.dart';
+import '../../domain/entities/category.dart';
 
 abstract class CategoryRepository {
-  Future<List<Category>> getCategories();
-  Future<Category?> getCategoryById(String id);
-  Future<void> addCategory(Category category);
+  Future<void> createCategory(Category category);
   Future<void> updateCategory(Category category);
   Future<void> deleteCategory(String id);
+  Future<Category?> getCategoryById(String id);
+  Future<List<Category>> getAllCategories();
   Future<Category?> getDefaultCategory();
   Future<void> setDefaultCategory(String categoryId);
-  Future<void> ensureDefaultCategory();
-  Stream<List<Category>> watchCategories();
-  Stream<Category?> watchDefaultCategory();
+  Stream<List<Category>> watchAllCategories();
+  Future<Category> ensureDefaultCategory();
 }

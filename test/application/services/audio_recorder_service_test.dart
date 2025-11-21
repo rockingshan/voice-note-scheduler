@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
+import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart';
+import 'package:voice_note_scheduler/src/application/repositories/voice_note_repository.dart';
 import 'package:voice_note_scheduler/src/application/services/audio_recorder_service.dart';
 import 'package:voice_note_scheduler/src/application/services/audio_recording_state.dart';
 import 'package:voice_note_scheduler/src/application/services/recorder.dart';
-import 'package:voice_note_scheduler/src/data/repositories/category_repository.dart';
-import 'package:voice_note_scheduler/src/data/repositories/voice_note_repository.dart';
 import 'package:voice_note_scheduler/src/domain/entities/category.dart';
 import 'package:voice_note_scheduler/src/domain/entities/voice_note.dart';
 
@@ -60,7 +60,8 @@ void main() {
       expect(service.currentState.status, RecordingStatus.recording);
     });
 
-    test('stopRecording should return metadata with duration and size', () async {
+    test('stopRecording should return metadata with duration and size',
+        () async {
       await service.startRecording();
       await Future.delayed(const Duration(milliseconds: 120));
       final metadata = await service.stopRecording();
@@ -83,7 +84,8 @@ void main() {
       expect(voiceNoteRepository.deletedPaths.contains(path), isTrue);
     });
 
-    test('elapsed time increments while recording and pauses when paused', () async {
+    test('elapsed time increments while recording and pauses when paused',
+        () async {
       await service.startRecording();
       await Future.delayed(const Duration(milliseconds: 150));
       final elapsedWhileRecording = service.currentState.elapsedTime;
@@ -194,13 +196,9 @@ void main() {
 class TestableAudioRecorderService extends AudioRecorderServiceImpl {
   TestableAudioRecorderService({
     required Recorder recorder,
-    required VoiceNoteRepository voiceNoteRepository,
-    required CategoryRepository categoryRepository,
-  }) : super(
-          recorder: recorder,
-          voiceNoteRepository: voiceNoteRepository,
-          categoryRepository: categoryRepository,
-        );
+    required super.voiceNoteRepository,
+    required super.categoryRepository,
+  }) : super(recorder: recorder);
 
   bool hasPermission = true;
   bool requestPermissionResult = true;
@@ -231,7 +229,8 @@ class StubVoiceNoteRepository implements VoiceNoteRepository {
   }
 
   @override
-  Future<String> generateAudioPath(String categoryId, {String? filename}) async {
+  Future<String> generateAudioPath(String categoryId,
+      {String? filename}) async {
     final safeName = filename ?? '${DateTime.now().millisecondsSinceEpoch}.m4a';
     final dir = Directory(p.join(_root.path, categoryId));
     if (!dir.existsSync()) {
@@ -264,18 +263,19 @@ class StubVoiceNoteRepository implements VoiceNoteRepository {
   @override
   Future<void> deleteVoiceNote(String id) => throw UnimplementedError();
   @override
-  Future<VoiceNote?> getVoiceNoteById(String id) =>
-      throw UnimplementedError();
+  Future<VoiceNote?> getVoiceNoteById(String id) => throw UnimplementedError();
   @override
   Future<List<VoiceNote>> getAllVoiceNotes() => throw UnimplementedError();
   @override
   Future<List<VoiceNote>> getVoiceNotesByCategory(String categoryId) =>
       throw UnimplementedError();
   @override
-  Stream<List<VoiceNote>> watchAllVoiceNotes() => const Stream.empty();
+  Stream<List<VoiceNote>> watchAllVoiceNotes() =>
+      const Stream<List<VoiceNote>>.empty();
+
   @override
   Stream<List<VoiceNote>> watchVoiceNotesByCategory(String categoryId) =>
-      const Stream.empty();
+      const Stream<List<VoiceNote>>.empty();
   @override
   Future<void> moveAudioFile(String oldPath, String newPath) =>
       throw UnimplementedError();
@@ -296,15 +296,14 @@ class StubCategoryRepository implements CategoryRepository {
   Future<Category?> getDefaultCategory() async => defaultCategory;
 
   @override
-  Stream<List<Category>> watchAllCategories() => const Stream.empty();
+  Stream<List<Category>> watchAllCategories() =>
+      const Stream<List<Category>>.empty();
 
   // Remaining methods are not required for these tests.
   @override
-  Future<void> createCategory(Category category) =>
-      throw UnimplementedError();
+  Future<void> createCategory(Category category) => throw UnimplementedError();
   @override
-  Future<void> updateCategory(Category category) =>
-      throw UnimplementedError();
+  Future<void> updateCategory(Category category) => throw UnimplementedError();
   @override
   Future<void> deleteCategory(String id) => throw UnimplementedError();
   @override

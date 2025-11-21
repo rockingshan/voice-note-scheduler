@@ -1,6 +1,9 @@
+// ignore_for_file: invalid_use_of_null_value
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart';
 import 'package:voice_note_scheduler/src/domain/entities/category.dart';
 import 'package:voice_note_scheduler/src/data/datasources/hive_category_datasource.dart';
 import 'package:voice_note_scheduler/src/data/repositories/category_repository.dart';
@@ -111,7 +114,7 @@ void main() {
       await repository.setDefaultCategory('work-id');
 
       verify(mockDatasource.getDefaultCategory()).called(1);
-      verify(mockDatasource.updateCategory(any)).called(2);
+      verify(mockDatasource.updateCategory(any<Category>())).called(2);
     });
 
     test('updateCategory enforces single default constraint', () async {
@@ -137,7 +140,7 @@ void main() {
       await repository.updateCategory(updatingCategory);
 
       verify(mockDatasource.getDefaultCategory()).called(1);
-      verify(mockDatasource.updateCategory(any)).called(2);
+      verify(mockDatasource.updateCategory(any<Category>())).called(2);
     });
 
     test('ensureDefaultCategory creates one if it does not exist', () async {
@@ -148,7 +151,7 @@ void main() {
 
       expect(result.name, equals('General'));
       expect(result.isDefault, isTrue);
-      verify(mockDatasource.createCategory(any)).called(1);
+      verify(mockDatasource.createCategory(any<Category>())).called(1);
     });
 
     test('ensureDefaultCategory returns existing default category', () async {
@@ -167,7 +170,7 @@ void main() {
 
       expect(result.id, equals('existing-id'));
       verify(mockDatasource.getDefaultCategory()).called(1);
-      verifyNever(mockDatasource.createCategory(any));
+      verifyNever(mockDatasource.createCategory(any<Category>()));
     });
 
     test('deleteCategory calls datasource', () async {

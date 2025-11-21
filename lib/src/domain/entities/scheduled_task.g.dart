@@ -22,7 +22,7 @@ class ScheduledTaskAdapter extends TypeAdapter<ScheduledTask> {
       description: fields[2] as String?,
       scheduledFor: fields[3] as DateTime,
       createdAt: fields[4] as DateTime,
-      updatedAt: fields[5] as DateTime,
+      updatedAt: fields[5] as DateTime?,
       voiceNoteId: fields[6] as String?,
       priority: fields[7] as TaskPriority,
       status: fields[8] as TaskStatus,

@@ -1,19 +1,15 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
+// ignore_for_file: invalid_use_of_null_value
 
-import 'package:voice_note_scheduler/src/core/utils/hive_initializer.dart';
-import 'package:voice_note_scheduler/src/domain/entities/voice_note.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart';
+import 'package:voice_note_scheduler/src/application/repositories/voice_note_repository.dart';
+import 'package:voice_note_scheduler/src/application/use_cases/create_voice_note_use_case.dart';
 import 'package:voice_note_scheduler/src/domain/entities/category.dart';
 import 'package:voice_note_scheduler/src/domain/entities/scheduled_task.dart';
-import 'package:voice_note_scheduler/src/application/use_cases/create_voice_note_use_case.dart';
-import 'package:voice_note_scheduler/src/application/repositories/voice_note_repository.dart' as app_repo;
-import 'package:voice_note_scheduler/src/application/repositories/category_repository.dart' as app_repo;
+import 'package:voice_note_scheduler/src/domain/entities/voice_note.dart';
 
-import 'integration_test.mocks.dart';
-
-@GenerateMocks([app_repo.VoiceNoteRepository, app_repo.CategoryRepository])
 void main() {
   group('Integration Tests', () {
     late MockVoiceNoteRepository mockVoiceNoteRepo;
@@ -31,7 +27,7 @@ void main() {
       final defaultCategory = Category(
         id: 'default-category',
         name: 'General',
-        color: '#2196F3',
+        color: 0xFF2196F3,
         isDefault: true,
         keywords: [],
         createdAt: DateTime.now(),
@@ -39,7 +35,7 @@ void main() {
 
       when(mockCategoryRepo.getDefaultCategory())
           .thenAnswer((_) async => defaultCategory);
-      when(mockVoiceNoteRepo.addVoiceNote(any))
+      when(mockVoiceNoteRepo.createVoiceNote(any<VoiceNote>()))
           .thenAnswer((_) async {});
 
       // Act
@@ -56,7 +52,7 @@ void main() {
       expect(voiceNote.categoryId, equals('default-category'));
       expect(voiceNote.status, equals(VoiceNoteStatus.saved));
       
-      verify(mockVoiceNoteRepo.addVoiceNote(any)).called(1);
+      verify(mockVoiceNoteRepo.createVoiceNote(any<VoiceNote>())).called(1);
     });
 
     test('ScheduledTask should have correct structure', () {
@@ -91,7 +87,6 @@ void main() {
         title: 'Test Note',
         audioPath: '/path/to/audio.m4a',
         createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
         categoryId: 'test-category',
         duration: 120,
         status: VoiceNoteStatus.saved,
@@ -114,3 +109,7 @@ void main() {
     });
   });
 }
+
+class MockVoiceNoteRepository extends Mock implements VoiceNoteRepository {}
+
+class MockCategoryRepository extends Mock implements CategoryRepository {}

@@ -17,7 +17,7 @@ class OllamaTranscriptionBackend implements TranscriptionBackend {
     if (_isDisposed) throw StateError('Backend is disposed');
     try {
       await _client.listModels().timeout(
-            Duration(seconds: AppConstants.ollamaTimeout),
+            const Duration(seconds: AppConstants.ollamaTimeout),
           );
     } catch (e) {
       throw StateError('Ollama server is not running at ${AppConstants.ollamaBaseUrl}. Error: $e');
@@ -29,7 +29,7 @@ class OllamaTranscriptionBackend implements TranscriptionBackend {
     if (_isDisposed) throw StateError('Backend is disposed');
     try {
       final models = await _client.listModels();
-      return models.models?.any((model) => model.name == modelName || model.model == modelName) ?? false;
+      return models.models?.any((model) => model.model == modelName) ?? false;
     } catch (e) {
       return false;
     }
@@ -41,17 +41,17 @@ class OllamaTranscriptionBackend implements TranscriptionBackend {
     try {
       final stream = _client.pullModelStream(
         request: PullModelRequest(
-          name: modelName,
+          model: modelName,
           stream: true,
         ),
       );
 
       await for (final response in stream) {
-        if (response.status != null && response.status!.contains('success')) {
+        if (response.status == PullModelStatus.success) {
           onProgress?.call(1.0);
           break;
         }
-        final total = response.total ?? 1;
+        final total = response.total ?? 0;
         final completed = response.completed ?? 0;
         if (total > 0) {
           onProgress?.call(completed / total);

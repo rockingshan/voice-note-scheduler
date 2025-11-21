@@ -1,22 +1,9 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import '../../application/repositories/voice_note_repository.dart';
 import '../../domain/entities/voice_note.dart';
 import '../datasources/hive_voice_note_datasource.dart';
-
-abstract class VoiceNoteRepository {
-  Future<void> createVoiceNote(VoiceNote voiceNote);
-  Future<void> updateVoiceNote(VoiceNote voiceNote);
-  Future<void> deleteVoiceNote(String id);
-  Future<VoiceNote?> getVoiceNoteById(String id);
-  Future<List<VoiceNote>> getAllVoiceNotes();
-  Future<List<VoiceNote>> getVoiceNotesByCategory(String categoryId);
-  Stream<List<VoiceNote>> watchAllVoiceNotes();
-  Stream<List<VoiceNote>> watchVoiceNotesByCategory(String categoryId);
-  Future<String> generateAudioPath(String categoryId, {String? filename});
-  Future<void> moveAudioFile(String oldPath, String newPath);
-  Future<void> deleteAudioFile(String audioPath);
-}
 
 class VoiceNoteRepositoryImpl implements VoiceNoteRepository {
   final VoiceNoteDatasource _datasource;
@@ -89,8 +76,6 @@ class VoiceNoteRepositoryImpl implements VoiceNoteRepository {
     try {
       final oldFile = File(oldPath);
       if (await oldFile.exists()) {
-        final newFile = File(newPath);
-        
         final newDir = Directory(p.dirname(newPath));
         if (!await newDir.exists()) {
           await newDir.create(recursive: true);
