@@ -1,4 +1,3 @@
-import '../../domain/entities/voice_note.dart';
 import '../../domain/entities/scheduled_task.dart';
 import '../repositories/voice_note_repository.dart';
 import '../repositories/scheduled_task_repository.dart';
@@ -23,7 +22,8 @@ class ScheduleTasksFromVoiceNoteUseCase {
     }
 
     if (voiceNote.transcription == null || voiceNote.transcription!.isEmpty) {
-      throw StateError('Voice note must be transcribed before scheduling tasks');
+      throw StateError(
+          'Voice note must be transcribed before scheduling tasks');
     }
 
     // Extract tasks from transcription

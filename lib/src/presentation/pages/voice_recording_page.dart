@@ -35,9 +35,9 @@ class VoiceRecordingPage extends ConsumerWidget {
   ) async {
     final categoryRepository = ref.read(categoryRepositoryProvider);
     final voiceNotesNotifier = ref.read(voiceNotesProvider.notifier);
-    
+
     final defaultCategory = await categoryRepository.ensureDefaultCategory();
-    
+
     final voiceNote = VoiceNote(
       title: 'Voice Note ${DateTime.now().toString().substring(0, 16)}',
       audioPath: metadata.audioFilePath,
@@ -49,7 +49,7 @@ class VoiceRecordingPage extends ConsumerWidget {
         'fileSize': metadata.fileSizeBytes.toString(),
       },
     );
-    
+
     await voiceNotesNotifier.addVoiceNote(voiceNote);
   }
 
@@ -72,7 +72,8 @@ class VoiceRecordingPage extends ConsumerWidget {
             IconButton(
               tooltip: 'Discard recording',
               icon: const Icon(Icons.delete_outline),
-              onPressed: () => _runAction(context, audioRecorder.cancelRecording),
+              onPressed: () =>
+                  _runAction(context, audioRecorder.cancelRecording),
             ),
         ],
       ),
@@ -93,8 +94,13 @@ class VoiceRecordingPage extends ConsumerWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: state.isRecording
-                          ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                          : Theme.of(context).colorScheme.surfaceContainerHighest,
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.15)
+                          : Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                       border: Border.all(
                         color: Theme.of(context).colorScheme.primary,
                         width: state.isRecording ? 4 : 2,
@@ -141,7 +147,8 @@ class VoiceRecordingPage extends ConsumerWidget {
               state: state,
               onStart: () => _runAction(context, audioRecorder.startRecording),
               onPause: () => _runAction(context, audioRecorder.pauseRecording),
-              onResume: () => _runAction(context, audioRecorder.resumeRecording),
+              onResume: () =>
+                  _runAction(context, audioRecorder.resumeRecording),
               onStop: () async {
                 final metadata = await audioRecorder.stopRecording();
                 if (metadata != null && context.mounted) {
@@ -158,7 +165,8 @@ class VoiceRecordingPage extends ConsumerWidget {
                   }
                 }
               },
-              onCancel: () => _runAction(context, audioRecorder.cancelRecording),
+              onCancel: () =>
+                  _runAction(context, audioRecorder.cancelRecording),
             ),
           ],
         ),

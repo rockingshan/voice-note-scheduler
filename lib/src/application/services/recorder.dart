@@ -3,9 +3,10 @@ import 'package:record/record.dart';
 abstract class Recorder {
   Future<void> start({
     required String path,
-    AudioEncoder encoder,
-    int bitRate,
-    int samplingRate,
+    AudioEncoder encoder = AudioEncoder.aacLc,
+    int bitRate = 128000,
+    int samplingRate = 44100,
+    int numChannels = 2,
   });
 
   Future<String?> stop();
@@ -15,9 +16,10 @@ abstract class Recorder {
 }
 
 class RecordPluginRecorder implements Recorder {
-  final Record _record;
+  final AudioRecorder _recorder;
 
-  RecordPluginRecorder({Record? record}) : _record = record ?? Record();
+  RecordPluginRecorder({AudioRecorder? recorder})
+      : _recorder = recorder ?? AudioRecorder();
 
   @override
   Future<void> start({
@@ -25,32 +27,38 @@ class RecordPluginRecorder implements Recorder {
     AudioEncoder encoder = AudioEncoder.aacLc,
     int bitRate = 128000,
     int samplingRate = 44100,
+    int numChannels = 2,
   }) {
-    return _record.start(
-      path: path,
+    final config = RecordConfig(
       encoder: encoder,
       bitRate: bitRate,
-      samplingRate: samplingRate,
+      sampleRate: samplingRate,
+      numChannels: numChannels,
+    );
+
+    return _recorder.start(
+      config,
+      path: path,
     );
   }
 
   @override
   Future<String?> stop() {
-    return _record.stop();
+    return _recorder.stop();
   }
 
   @override
   Future<void> pause() {
-    return _record.pause();
+    return _recorder.pause();
   }
 
   @override
   Future<void> resume() {
-    return _record.resume();
+    return _recorder.resume();
   }
 
   @override
   Future<void> dispose() {
-    return _record.dispose();
+    return _recorder.dispose();
   }
 }

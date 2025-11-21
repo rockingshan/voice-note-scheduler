@@ -26,7 +26,8 @@ class TranscribeVoiceNoteUseCase {
 
     try {
       // Transcribe the audio
-      final result = await _transcriptionService.transcribe(voiceNote.audioPath);
+      final result =
+          await _transcriptionService.transcribe(voiceNote.audioPath);
 
       // Update with transcription result
       final transcribedNote = processingNote.copyWith(

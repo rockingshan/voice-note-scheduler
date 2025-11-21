@@ -82,7 +82,8 @@ class ScheduledTasksPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildTaskList(BuildContext context, WidgetRef ref, List<ScheduledTask> tasks) {
+  Widget _buildTaskList(
+      BuildContext context, WidgetRef ref, List<ScheduledTask> tasks) {
     final sortedTasks = List<ScheduledTask>.from(tasks)
       ..sort((a, b) => a.scheduledFor.compareTo(b.scheduledFor));
 
@@ -124,7 +125,8 @@ class ScheduledTasksPage extends ConsumerWidget {
                               tag,
                               style: const TextStyle(fontSize: 10),
                             ),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           ),
                         )
                         .toList(),
@@ -134,11 +136,17 @@ class ScheduledTasksPage extends ConsumerWidget {
             trailing: PopupMenuButton<String>(
               onSelected: (value) async {
                 if (value == 'complete') {
-                  final updatedTask = task.copyWith(status: TaskStatus.completed);
-                  await ref.read(tasksProvider.notifier).updateTask(updatedTask);
+                  final updatedTask =
+                      task.copyWith(status: TaskStatus.completed);
+                  await ref
+                      .read(tasksProvider.notifier)
+                      .updateTask(updatedTask);
                 } else if (value == 'cancel') {
-                  final updatedTask = task.copyWith(status: TaskStatus.cancelled);
-                  await ref.read(tasksProvider.notifier).updateTask(updatedTask);
+                  final updatedTask =
+                      task.copyWith(status: TaskStatus.cancelled);
+                  await ref
+                      .read(tasksProvider.notifier)
+                      .updateTask(updatedTask);
                 } else if (value == 'delete') {
                   await ref.read(tasksProvider.notifier).deleteTask(task.id);
                 }

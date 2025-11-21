@@ -22,7 +22,7 @@ class CreateVoiceNoteUseCase {
     Map<String, String>? metadata,
   }) async {
     // Ensure we have a valid category
-    final targetCategoryId = categoryId ?? 
+    final targetCategoryId = categoryId ??
         (await _categoryRepository.getDefaultCategory())?.id ??
         (await _ensureDefaultCategory()).id;
 
